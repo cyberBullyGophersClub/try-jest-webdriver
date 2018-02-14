@@ -25,8 +25,8 @@ describe("Тесты авторизации", () => {
         let chromeCapabilities = webdriver.Capabilities.chrome();
         let chromeOptions = {
             args: [
-                /*'headless',
-                'disable-gpu',*/
+                //'headless',
+                'disable-gpu',
                 "no-sandbox",
             ],
         };
@@ -38,7 +38,7 @@ beforeEach(async() => {
     await driver.get(acc.domen);
     await driver.wait(
         until.elementLocated(
-            By.id("Username")
+            By.id(s.inputs.userInput)
         ));
 });
 
@@ -53,7 +53,7 @@ test("Верное сообщение об ошибке при авториза�
     await driver.wait(
         until.elementLocated(
             By.xpath(s.errorFields.invLoginError)
-        )
+        ), timeout
     );
 
     let error = await driver.findElement(By.xpath(s.errorFields.invLoginError)).getText();
@@ -74,54 +74,86 @@ test("Успешная авторизация", async () => {
 });
 
 
-/*describe("Тесты восстановления пароля", () => {
+describe("Тесты восстановления пароля", () => {
     beforeAll(async () => {
-    browser = await puppeteer.launch({headless: false,
-        args: [`--window-size=${width},${height}` ,"--no-sandbox"]});
-    page = await browser.newPage();
-    await page.setViewport({width, height});
+        webdriver = require('selenium-webdriver');
+        until = webdriver.until;
+        By = webdriver.By;
+
+        let chromeCapabilities = webdriver.Capabilities.chrome();
+        let chromeOptions = {
+            args: [
+                /*'headless',
+                'disable-gpu',*/
+                "no-sandbox",
+            ],
+        };
+        chromeCapabilities.set("chromeOptions", chromeOptions);
+        driver = new webdriver.Builder().forBrowser("chrome").build();
 });
 
 beforeEach(async () => {
-    await page.goto(acc.domen);
-    await page.waitFor(1000);
-    await page.click(s.buttons.btnForgotPw);
+    await driver.get(acc.domen);
+    await driver.wait(
+        until.elementLocated(
+            By.id(s.buttons.btnForgotPw)
+        ));
+    await driver.findElement(By.id(s.buttons.btnForgotPw)).click();
 });
 
 afterAll(async () => {
-    await browser.close();
+    await driver.quit();
 });
 
 test("Верное сообщение об ошибке при вводе кириллицы", async () => {
-    await page.type(s.inputs.forgotPwLogin, "тест");
-    await page.click(s.buttons.btnContinue);
-    const errText = await page.$eval(s.errorFields.pwError, el => el.textContent);
-    expect(errText).toEqual("Недопустимые символы.");
+    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys("Тест");
+    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
+    await driver.findElement(By.id(s.buttons.btnContinue)).click();
+    await driver.wait(
+        until.elementLocated(
+            By.css(s.errorFields.pwError)
+        ));
+    let error = await driver.findElement(By.css(s.errorFields.pwError)).getText();
+    expect(error).toEqual("Недопустимые символы.");
     }, timeout);
 
 test("Верное сообщение об ошибке при вводе несуществующего аккаунта", async () => {
-    await page.type(s.inputs.forgotPwLogin, acc.invLogin);
-    await page.click(s.buttons.btnContinue);
-    const errText = await page.$eval(s.errorFields.pwError, el => el.textContent);
-    expect(errText).toEqual("Вы указали неверный логин.");
+    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.invLogin);
+    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
+    await driver.findElement(By.id(s.buttons.btnContinue)).click();
+    await driver.wait(
+        until.elementLocated(
+            By.css(s.errorFields.pwError)
+        ));
+    let error = await driver.findElement(By.css(s.errorFields.pwError)).getText();
+    expect(error).toEqual("Вы указали неверный логин.");
     }, timeout);
 
 test("Верное сообщение об ошибке при восстановлении пароля с отсутствующим e-mail", async () => {
-    await page.type(s.inputs.forgotPwLogin, acc.pwTestLogin);
-    await page.click(s.buttons.btnContinue);
-    const errText = await page.$eval(s.errorFields.pwError, el => el.textContent);
-    expect(errText).toEqual("Для сотрудника не задан e-mail для восстановления пароля.");
+    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.pwTestLogin);
+    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
+    await driver.findElement(By.id(s.buttons.btnContinue)).click();
+    await driver.wait(
+        until.elementLocated(
+            By.css(s.errorFields.pwError)
+        ));
+    let error = await driver.findElement(By.css(s.errorFields.pwError)).getText();
+    expect(error).toEqual("Для сотрудника не задан e-mail для восстановления пароля.");
     }, timeout);
 
 test("Отправка инструкций на e-mail", async () => {
-    await page.type(s.inputs.forgotPwLogin, acc.authTestLogin);
-    await page.click(s.buttons.btnContinue);
-    await page.waitForSelector(s.testSelectors.successPwRec);
+    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.pwTestLogin);
+    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
+    await driver.findElement(By.id(s.buttons.btnContinue)).click();
+    await driver.findElement(By.css(s.testSelectors.successPwRec));
     }, timeout);
 
 test("Тест кнопки 'НАЗАД'", async () => {
-    await page.click(s.buttons.btnBack);
-    await page.waitForSelector(s.buttons.btnForgotPw);
+    await driver.findElement(By.id(s.buttons.btnBack)).click();
+    await driver.wait(
+        until.elementLocated(
+            By.id(s.buttons.btnForgotPw)
+        ));
     }, timeout);
 
-});*/
+});
