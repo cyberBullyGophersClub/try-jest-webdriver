@@ -25,8 +25,8 @@ describe("Тесты авторизации", () => {
         let chromeCapabilities = webdriver.Capabilities.chrome();
         let chromeOptions = {
             args: [
-                //'headless',
-                'disable-gpu',
+                //"headless",
+                "disable-gpu",
                 "no-sandbox",
             ],
         };
@@ -107,7 +107,6 @@ afterAll(async () => {
 
 test("Верное сообщение об ошибке при вводе кириллицы", async () => {
     await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys("Тест");
-    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
     await driver.findElement(By.id(s.buttons.btnContinue)).click();
     await driver.wait(
         until.elementLocated(
@@ -119,7 +118,6 @@ test("Верное сообщение об ошибке при вводе кир
 
 test("Верное сообщение об ошибке при вводе несуществующего аккаунта", async () => {
     await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.invLogin);
-    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
     await driver.findElement(By.id(s.buttons.btnContinue)).click();
     await driver.wait(
         until.elementLocated(
@@ -131,7 +129,6 @@ test("Верное сообщение об ошибке при вводе нес
 
 test("Верное сообщение об ошибке при восстановлении пароля с отсутствующим e-mail", async () => {
     await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.pwTestLogin);
-    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
     await driver.findElement(By.id(s.buttons.btnContinue)).click();
     await driver.wait(
         until.elementLocated(
@@ -142,8 +139,7 @@ test("Верное сообщение об ошибке при восстано�
     }, timeout);
 
 test("Отправка инструкций на e-mail", async () => {
-    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.pwTestLogin);
-    await driver.findElement(By.id(s.inputs.pwInput)).sendKeys(acc.password);
+    await driver.findElement(By.id(s.inputs.forgotPwLogin)).sendKeys(acc.authTestLogin);
     await driver.findElement(By.id(s.buttons.btnContinue)).click();
     await driver.findElement(By.css(s.testSelectors.successPwRec));
     }, timeout);
