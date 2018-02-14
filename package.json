@@ -1,0 +1,16 @@
+{
+  "name": "try-jest-webdriver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auth.jest.js",
+  "dependencies": {
+    "jest": "^22.2.2",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC"
+}
